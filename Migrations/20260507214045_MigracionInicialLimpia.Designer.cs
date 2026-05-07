@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Calculato.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260507184009_ActualizarModeloProfesional")]
-    partial class ActualizarModeloProfesional
+    [Migration("20260507214045_MigracionInicialLimpia")]
+    partial class MigracionInicialLimpia
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
