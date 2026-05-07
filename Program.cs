@@ -6,26 +6,39 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. SERVICIOS
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); // Configuración automática más simple
+builder.Services.AddSwaggerGen();
+
+// Leer la conexión
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"DEBUG: La cadena leída es: {(string.IsNullOrEmpty(connectionString) ? "VACÍA" : "ENCONTRADA")}");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
-// 2. PIPELINE (Interfaz visual)
-if (app.Environment.IsDevelopment())
+// 2. SINCRONIZACIÓN DE BASE DE DATOS
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    try
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Calculato API V1");
-        c.RoutePrefix = string.Empty; // Carga Swagger al abrir la URL
-    });
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Console.WriteLine("DEBUG: Intentando conectar a PostgreSQL...");
+        context.Database.EnsureCreated();
+        Console.WriteLine("✅ ¡CONEXIÓN Y TABLAS EXITOSAS!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ ERROR DE BASE DE DATOS: {ex.Message}");
+    }
 }
 
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+// 3. PIPELINE
+app.UseSwagger();
+app.UseSwaggerUI(c => {
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = string.Empty;
+});
 
+app.MapControllers();
 app.Run();
