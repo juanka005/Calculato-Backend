@@ -1,0 +1,6 @@
+@Calculato.Api_HostAddress = http://localhost:5081
+
+GET {{Calculato.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
