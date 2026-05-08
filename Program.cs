@@ -22,19 +22,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-// 2. SINCRONIZACIÓN DE BASE DE DATOS
+// 2. SINCRONIZACIÓN DE BASE DE DATOS PROFESIONAL
 using (var scope = app.Services.CreateScope())
 {
     try
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        Console.WriteLine("DEBUG: Intentando conectar a PostgreSQL...");
-        context.Database.EnsureCreated();
-        Console.WriteLine("✅ ¡CONEXIÓN Y TABLAS EXITOSAS!");
+        Console.WriteLine("DEBUG: Aplicando cambios pendientes en la base de datos...");
+
+        // 🚀 CAMBIO CLAVE: Migrate() sí sabe agregar tablas nuevas a una base de datos existente
+        context.Database.Migrate();
+
+        Console.WriteLine("✅ ¡BASE DE DATOS ACTUALIZADA Y TABLAS LISTAS!");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ ERROR DE BASE DE DATOS: {ex.Message}");
+        Console.WriteLine($"❌ ERROR AL ACTUALIZAR BD: {ex.Message}");
     }
 }
 
