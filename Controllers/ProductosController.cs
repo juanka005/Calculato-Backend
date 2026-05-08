@@ -50,5 +50,16 @@ namespace Calculato.Api.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpPut("sumar-stock")]
+        public async Task<IActionResult> AddStock([FromBody] StockUpdateDto data)
+        {
+            var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Nombre == data.Nombre);
+            if (producto == null) return NotFound();
+
+            producto.Stock += data.Cantidad; // 🚀 AQUÍ SUMAMOS
+            await _context.SaveChangesAsync();
+            return Ok(producto);
+        }
     }
 }
