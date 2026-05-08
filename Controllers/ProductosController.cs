@@ -21,5 +21,24 @@ namespace Calculato.Api.Controllers
             await _context.SaveChangesAsync();
             return Ok(p);
         }
+
+        // En ProductosController.cs
+        [HttpPut("actualizar-stock")]
+        public async Task<IActionResult> UpdateStock([FromBody] StockUpdateDto data)
+        {
+            var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Nombre == data.Nombre);
+            if (producto == null) return NotFound();
+
+            producto.Stock -= data.Cantidad; // Restamos lo vendido
+            await _context.SaveChangesAsync();
+            return Ok(producto);
+        }
+
+        // Clase de apoyo (puedes ponerla al final del archivo)
+        public class StockUpdateDto
+        {
+            public string Nombre { get; set; }
+            public int Cantidad { get; set; }
+        }
     }
 }
