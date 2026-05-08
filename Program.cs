@@ -31,7 +31,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("DEBUG: Iniciando limpieza de base de datos...");
 
         // 1. 🧨 ¡CUIDADO! Esto borra TODA la base de datos en Render
-        context.Database.EnsureDeleted();
+       
 
         // 2. 🏗️ Esto aplica las migraciones desde cero (Crea Transacciones y Productos)
         context.Database.Migrate();
