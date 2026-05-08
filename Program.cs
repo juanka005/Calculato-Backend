@@ -12,6 +12,11 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine($"DEBUG: La cadena leída es: {(string.IsNullOrEmpty(connectionString) ? "VACÍA" : "ENCONTRADA")}");
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // 🚀 Esto hace que acepte Mayúsculas (TotalPagado)
+    });
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
