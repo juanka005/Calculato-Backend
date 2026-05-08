@@ -6,6 +6,7 @@ namespace Calculato.Api.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<Transaccion> Transacciones { get; set; }
+        public DbSet<Producto> Productos { get; set; }
     }
 
     public class Transaccion
@@ -22,5 +23,16 @@ namespace Calculato.Api.Data
         public string Descripcion { get; set; } = string.Empty;
         public bool EstaAnulada { get; set; } = false;
         public string MotivoAnulacion { get; set; } = string.Empty;
+    }
+
+    public class Producto
+    {
+        public int Id { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string CodigoBarras { get; set; } = string.Empty;
+        public decimal Costo { get; set; }
+        public decimal PrecioVenta { get; set; }
+        public int Stock { get; set; }
+        public string Categoria { get; set; } = string.Empty;
     }
 }

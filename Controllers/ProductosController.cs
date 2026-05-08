@@ -1,83 +1,25 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Calculato.Api.Data;
 
 namespace Calculato.Api.Controllers
 {
-    public class ProductosController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProductosController : ControllerBase
     {
-        // GET: ProductosController
-        public ActionResult Index()
-        {
-            return View();
-        }
+        private readonly AppDbContext _context;
+        public ProductosController(AppDbContext context) { _context = context; }
 
-        // GET: ProductosController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Producto>>> Get() => await _context.Productos.ToListAsync();
 
-        // GET: ProductosController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ProductosController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult<Producto>> Post(Producto p)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ProductosController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ProductosController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ProductosController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ProductosController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _context.Productos.Add(p);
+            await _context.SaveChangesAsync();
+            return Ok(p);
         }
     }
 }
