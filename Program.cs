@@ -22,22 +22,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-// 2. SINCRONIZACIÓN DE BASE DE DATOS PROFESIONAL
+// --- BLOQUE DE LIMPIEZA Y REINICIO ---
 using (var scope = app.Services.CreateScope())
 {
     try
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        Console.WriteLine("DEBUG: Aplicando cambios pendientes en la base de datos...");
+        Console.WriteLine("DEBUG: Iniciando limpieza de base de datos...");
 
-        // 🚀 CAMBIO CLAVE: Migrate() sí sabe agregar tablas nuevas a una base de datos existente
+        // 1. 🧨 ¡CUIDADO! Esto borra TODA la base de datos en Render
+        context.Database.EnsureDeleted();
+
+        // 2. 🏗️ Esto aplica las migraciones desde cero (Crea Transacciones y Productos)
         context.Database.Migrate();
 
-        Console.WriteLine("✅ ¡BASE DE DATOS ACTUALIZADA Y TABLAS LISTAS!");
+        Console.WriteLine("✅ ¡BASE DE DATOS RESETEADA Y TABLAS CREADAS DESDE CERO!");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ ERROR AL ACTUALIZAR BD: {ex.Message}");
+        Console.WriteLine($"❌ ERROR: {ex.Message}");
     }
 }
 
