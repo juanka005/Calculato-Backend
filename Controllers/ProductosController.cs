@@ -40,5 +40,15 @@ namespace Calculato.Api.Controllers
             public string Nombre { get; set; }
             public int Cantidad { get; set; }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var producto = await _context.Productos.FindAsync(id);
+            if (producto == null) return NotFound();
+            _context.Productos.Remove(producto);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
